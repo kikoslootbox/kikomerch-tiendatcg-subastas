@@ -22,9 +22,15 @@ router.post("/login", async(req,res)=>{
 
   try{
 
-    const {username,password} = req.body;
+    console.log("BODY:", req.body);
 
-    const admin = await Admin.findOne({username});
+    const { username, password } = req.body;
+
+    const admin = await Admin.findOne({
+      username: username.trim()
+    });
+
+    console.log("FOUND ADMIN:", admin);
 
     if(!admin){
 
@@ -34,7 +40,7 @@ router.post("/login", async(req,res)=>{
     }
 
     const validPassword = await bcrypt.compare(
-      password,
+      password.trim(),
       admin.password
     );
 
@@ -49,7 +55,7 @@ router.post("/login", async(req,res)=>{
 
     const token = jwt.sign(
       {
-        id:admin._id
+        id: admin._id
       },
       process.env.JWT_SECRET,
       {
@@ -63,7 +69,7 @@ router.post("/login", async(req,res)=>{
 
   }catch(err){
 
-    console.log(err);
+    console.log("LOGIN ERROR:", err);
 
     res.status(500).json(err);
 
