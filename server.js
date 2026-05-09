@@ -1,5 +1,7 @@
 require("dotenv").config();
 
+
+const auctionRoutes = require("./routes/auctionRoutes");
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -11,6 +13,10 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(
+    "/api/auctions",
+    auctionRoutes
+);
 
 // =========================
 // MODELS
@@ -216,3 +222,47 @@ app.post(
     }
 
 });
+
+/* =========================================
+AUTO END AUCTIONS
+========================================= */
+
+const Auction =
+require("./models/Auction");
+
+setInterval(async()=>{
+
+  try{
+
+    const now =
+    new Date();
+
+    await Auction.updateMany(
+
+      {
+
+        endTime:{
+          $lte:now
+        },
+
+        ended:false
+
+      },
+
+      {
+
+        ended:true,
+
+        status:"ended"
+
+      }
+
+    );
+
+  }catch(err){
+
+    console.log(err);
+
+  }
+
+},60000);
