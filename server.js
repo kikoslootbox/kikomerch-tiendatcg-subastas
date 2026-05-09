@@ -55,6 +55,10 @@ function createRoutes(model,route){
   upload.single("image"),
   async(req,res)=>{
 
+    console.log(req.body);
+
+console.log(req.file);
+
     try{
 
       const newItem = new model({
