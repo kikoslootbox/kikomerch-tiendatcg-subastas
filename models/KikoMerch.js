@@ -2,14 +2,15 @@ const mongoose = require("mongoose");
 
 const merchSchema = new mongoose.Schema({
 
-  image: String,
+  name:String,
 
-  name: String,
+  price:Number,
 
-  price: Number,
+  image:String,
 
-  streamlabs: String
+  streamlabsLink:String
 
 });
 
-module.exports = mongoose.model("KikoMerch", merchSchema);
+module.exports =
+mongoose.model("Merch", merchSchema);
