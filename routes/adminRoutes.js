@@ -64,8 +64,12 @@ router.post("/login", async(req,res)=>{
     );
 
     res.json({
-      token
-    });
+
+  token,
+
+  role: admin.role
+
+});
 
   }catch(err){
 

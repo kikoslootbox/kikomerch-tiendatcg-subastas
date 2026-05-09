@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const upload = require("./config/upload");
 
+const nodemailer = require("nodemailer");
+
 const app = express();
 
 app.use(cors());
@@ -139,5 +141,78 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, "0.0.0.0", ()=>{
 
   console.log(`Server Running on ${PORT}`);
+
+});
+
+app.post(
+  "/api/send-order-email",
+  async(req,res)=>{
+
+    try{
+
+      const {
+        product,
+        name,
+        phone,
+        meetingPoint
+      } = req.body;
+
+      const transporter =
+      nodemailer.createTransport({
+
+        service:"gmail",
+
+        auth:{
+
+          user:
+          process.env.EMAIL_USER,
+
+          pass:
+          process.env.EMAIL_PASS
+
+        }
+
+      });
+
+      await transporter.sendMail({
+
+        from:process.env.EMAIL_USER,
+
+        to:"compras@kikoslootbox.com",
+
+        subject:
+        "Nueva Orden En Persona",
+
+        html:`
+
+          <h2>Nueva Orden</h2>
+
+          <p><strong>Producto:</strong>
+          ${product}</p>
+
+          <p><strong>Nombre:</strong>
+          ${name}</p>
+
+          <p><strong>Teléfono:</strong>
+          ${phone}</p>
+
+          <p><strong>Punto de Encuentro:</strong>
+          ${meetingPoint}</p>
+
+        `
+
+      });
+
+      res.json({
+        success:true
+      });
+
+    }catch(err){
+
+      console.log(err);
+
+      res.status(500).json(err);
+
+    }
 
 });
