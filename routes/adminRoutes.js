@@ -6,13 +6,19 @@ const jwt = require("jsonwebtoken");
 
 const Admin = require("../models/Admin");
 
+// LOGIN
+
 router.post("/login", async(req,res)=>{
 
   try{
 
+    console.log("BODY:", req.body);
+
     const {username,password} = req.body;
 
     const admin = await Admin.findOne({username});
+
+    console.log("ADMIN:", admin);
 
     if(!admin){
 
@@ -21,13 +27,12 @@ router.post("/login", async(req,res)=>{
       });
     }
 
-    console.log(password);
-console.log(admin.password);
-
     const validPassword = await bcrypt.compare(
       password,
       admin.password
     );
+
+    console.log("PASSWORD MATCH:", validPassword);
 
     if(!validPassword){
 
