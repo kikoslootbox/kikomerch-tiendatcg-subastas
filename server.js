@@ -3,6 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const upload = require("./config/upload");
 
 const app = express();
 
@@ -49,11 +50,20 @@ function createRoutes(model,route){
   });
 
   // POST
-  app.post(`/api/${route}`, async(req,res)=>{
+  app.post(
+  `/api/${route}`,
+  upload.single("image"),
+  async(req,res)=>{
 
     try{
 
-      const newItem = new model(req.body);
+      const newItem = new model({
+
+  ...req.body,
+
+  image:req.file?.path
+
+});
 
       await newItem.save();
 
