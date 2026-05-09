@@ -6,10 +6,6 @@ const jwt = require("jsonwebtoken");
 
 const Admin = require("../models/Admin");
 
-// =========================
-// LOGIN
-// =========================
-
 router.post("/login", async(req,res)=>{
 
   try{
@@ -24,6 +20,9 @@ router.post("/login", async(req,res)=>{
         message:"Admin no encontrado"
       });
     }
+
+    console.log(password);
+console.log(admin.password);
 
     const validPassword = await bcrypt.compare(
       password,
@@ -52,6 +51,8 @@ router.post("/login", async(req,res)=>{
     });
 
   }catch(err){
+
+    console.log(err);
 
     res.status(500).json(err);
 

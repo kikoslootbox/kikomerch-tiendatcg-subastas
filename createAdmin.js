@@ -9,7 +9,20 @@ const Admin = require("./models/Admin");
 mongoose.connect(process.env.MONGO_URI)
 .then(async()=>{
 
-  const hashedPassword = await bcrypt.hash("123456",10);
+  console.log("Mongo Connected");
+
+  // ELIMINAR ADMIN VIEJO
+
+  await Admin.deleteMany({
+    username:"admin"
+  });
+
+  // NUEVO PASSWORD
+
+  const hashedPassword =
+  await bcrypt.hash("123456",10);
+
+  // CREAR ADMIN
 
   const admin = new Admin({
 
@@ -21,8 +34,13 @@ mongoose.connect(process.env.MONGO_URI)
 
   await admin.save();
 
-  console.log("Admin creado");
+  console.log("Admin creado correctamente");
 
   process.exit();
+
+})
+.catch(err=>{
+
+  console.log(err);
 
 });
