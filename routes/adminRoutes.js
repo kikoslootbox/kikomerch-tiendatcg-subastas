@@ -6,6 +6,14 @@ const jwt = require("jsonwebtoken");
 
 const Admin = require("../models/Admin");
 
+router.get("/test", (req,res)=>{
+
+  res.json({
+    message:"Admin route works"
+  });
+
+});
+
 // LOGIN
 
 router.post("/login", async(req,res)=>{
