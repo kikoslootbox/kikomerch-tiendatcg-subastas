@@ -11,18 +11,22 @@ mongoose.connect(process.env.MONGO_URI)
 
   console.log("Mongo Connected");
 
-  // ELIMINAR ADMIN VIEJO
+  // PASSWORD EXACTO
 
-  await Admin.deleteMany({
-    username:"admin"
-  });
+  const plainPassword = "123456";
 
-  // NUEVO PASSWORD
+  console.log("PLAIN:", plainPassword);
 
-  const hashedPassword =
-  await bcrypt.hash("123456",10);
+  // HASH
 
-  // CREAR ADMIN
+  const hashedPassword = await bcrypt.hash(
+    plainPassword,
+    10
+  );
+
+  console.log("HASH:", hashedPassword);
+
+  // CREATE ADMIN
 
   const admin = new Admin({
 
