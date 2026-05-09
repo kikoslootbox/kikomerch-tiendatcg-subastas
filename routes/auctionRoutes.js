@@ -1,3 +1,6 @@
+const auth =
+require("../middleware/auth");
+
 const cloudinary =
 require("../config/cloudinary");
 
@@ -41,6 +44,7 @@ CREATE AUCTION
 
 router.post(
 "/",
+auth,
 upload.array("images",10),
 
 async(req,res)=>{
@@ -109,8 +113,7 @@ async(req,res)=>{
       shipping:
       req.body.shipping,
 
-      seller:
-      req.body.seller,
+      seller:req.user.id,
 
       images:uploadedImages,
 
@@ -140,22 +143,75 @@ async(req,res)=>{
 DELETE AUCTION
 ========================================= */
 
-router.delete("/:id",async(req,res)=>{
+router.delete(
+"/:id",
+auth,
+
+async(req,res)=>{
 
   try{
+
+    const auction =
+    await Auction.findById(
+      req.params.id
+    );
+
+    if(!auction){
+
+      return res.status(404)
+      .json({
+
+        message:
+        "Auction not found"
+
+      });
+
+    }
+
+    /* =========================
+       OWNER CHECK
+    ========================= */
+
+    if(
+
+      auction.seller.toString()
+
+      !==
+
+      req.user.id
+
+    ){
+
+      return res.status(403)
+      .json({
+
+        message:
+        "Unauthorized"
+
+      });
+
+    }
 
     await Auction.findByIdAndDelete(
       req.params.id
     );
 
     res.json({
-      message:"Auction deleted"
+
+      message:
+      "Auction deleted"
+
     });
 
   }catch(err){
 
+    console.log(err);
+
     res.status(500).json({
-      message:err.message
+
+      message:
+      err.message
+
     });
 
   }
@@ -166,9 +222,54 @@ router.delete("/:id",async(req,res)=>{
 UPDATE AUCTION
 ========================================= */
 
-router.put("/:id",async(req,res)=>{
+router.put(
+"/:id",
+auth,
+
+async(req,res)=>{
 
   try{
+
+    const auction =
+    await Auction.findById(
+      req.params.id
+    );
+
+    if(!auction){
+
+      return res.status(404)
+      .json({
+
+        message:
+        "Auction not found"
+
+      });
+
+    }
+
+    /* =========================
+       OWNER CHECK
+    ========================= */
+
+    if(
+
+      auction.seller.toString()
+
+      !==
+
+      req.user.id
+
+    ){
+
+      return res.status(403)
+      .json({
+
+        message:
+        "Unauthorized"
+
+      });
+
+    }
 
     const updated =
     await Auction.findByIdAndUpdate(
@@ -185,8 +286,13 @@ router.put("/:id",async(req,res)=>{
 
   }catch(err){
 
+    console.log(err);
+
     res.status(500).json({
-      message:err.message
+
+      message:
+      err.message
+
     });
 
   }

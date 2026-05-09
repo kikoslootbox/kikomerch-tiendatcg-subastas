@@ -1,0 +1,225 @@
+const express =
+require("express");
+
+const bcrypt =
+require("bcryptjs");
+
+const jwt =
+require("jsonwebtoken");
+
+const router =
+express.Router();
+
+const User =
+require("../models/User");
+
+/* =========================================
+REGISTER
+========================================= */
+
+router.post(
+"/register",
+async(req,res)=>{
+
+  try{
+
+    const {
+
+      username,
+      email,
+      password
+
+    } = req.body;
+
+    /* =========================
+       CHECK USER
+    ========================= */
+
+    const existingUser =
+    await User.findOne({
+
+      $or:[
+        {email},
+        {username}
+      ]
+
+    });
+
+    if(existingUser){
+
+      return res.status(400)
+      .json({
+
+        message:
+        "Usuario ya existe"
+
+      });
+
+    }
+
+    /* =========================
+       HASH PASSWORD
+    ========================= */
+
+    const hashedPassword =
+    await bcrypt.hash(
+      password,
+      10
+    );
+
+    /* =========================
+       CREATE USER
+    ========================= */
+
+    const user =
+    new User({
+
+      username,
+      email,
+
+      password:
+      hashedPassword
+
+    });
+
+    await user.save();
+
+    res.json({
+
+      message:
+      "Cuenta creada"
+
+    });
+
+  }catch(err){
+
+    console.log(err);
+
+    res.status(500).json({
+
+      message:
+      err.message
+
+    });
+
+  }
+
+});
+
+/* =========================================
+LOGIN
+========================================= */
+
+router.post(
+"/login",
+async(req,res)=>{
+
+  try{
+
+    const {
+
+      email,
+      password
+
+    } = req.body;
+
+    /* =========================
+       FIND USER
+    ========================= */
+
+    const user =
+    await User.findOne({
+      email
+    });
+
+    if(!user){
+
+      return res.status(400)
+      .json({
+
+        message:
+        "Usuario no encontrado"
+
+      });
+
+    }
+
+    /* =========================
+       CHECK PASSWORD
+    ========================= */
+
+    const validPassword =
+    await bcrypt.compare(
+
+      password,
+
+      user.password
+
+    );
+
+    if(!validPassword){
+
+      return res.status(400)
+      .json({
+
+        message:
+        "Password incorrecto"
+
+      });
+
+    }
+
+    /* =========================
+       JWT
+    ========================= */
+
+    const token =
+    jwt.sign(
+
+      {
+
+        id:user._id,
+
+        role:user.role
+
+      },
+
+      process.env.JWT_SECRET,
+
+      {
+
+        expiresIn:"7d"
+
+      }
+
+    );
+
+    res.json({
+
+      token,
+
+      role:user.role,
+
+      userId:user._id,
+
+      username:user.username
+
+    });
+
+  }catch(err){
+
+    console.log(err);
+
+    res.status(500).json({
+
+      message:
+      err.message
+
+    });
+
+  }
+
+});
+
+module.exports =
+router;

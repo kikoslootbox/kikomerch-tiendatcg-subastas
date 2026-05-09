@@ -1,6 +1,12 @@
+const http =
+require("http");
+
+const { Server } =
+require("socket.io");
+
 require("dotenv").config();
 
-
+const userRoutes = require("./routes/userRoutes");
 const auctionRoutes = require("./routes/auctionRoutes");
 const express = require("express");
 const mongoose = require("mongoose");
@@ -11,11 +17,28 @@ const nodemailer = require("nodemailer");
 
 const app = express();
 
+const server =
+http.createServer(app);
+
+const io =
+new Server(server,{
+
+  cors:{
+    origin:"*"
+  }
+
+});
+
 app.use(cors());
 app.use(express.json());
 app.use(
     "/api/auctions",
     auctionRoutes
+);
+
+app.use(
+  "/api/users",
+  userRoutes
 );
 
 // =========================
@@ -266,3 +289,57 @@ setInterval(async()=>{
   }
 
 },60000);
+
+/* =========================================
+SOCKET.IO
+========================================= */
+
+io.on("connection",(socket)=>{
+
+  console.log(
+    "USER CONNECTED:",
+    socket.id
+  );
+
+  /* =========================
+     JOIN AUCTION ROOM
+  ========================= */
+
+  socket.on(
+    "joinAuction",
+    (auctionId)=>{
+
+      socket.join(auctionId);
+
+    }
+  );
+
+  /* =========================
+     LIVE BID
+  ========================= */
+
+  socket.on(
+    "newBid",
+    async(data)=>{
+
+      io.to(data.auctionId)
+      .emit(
+        "bidUpdated",
+        data
+      );
+
+    }
+  );
+
+  socket.on(
+    "disconnect",
+    ()=>{
+
+      console.log(
+        "USER DISCONNECTED"
+      );
+
+    }
+  );
+
+});
