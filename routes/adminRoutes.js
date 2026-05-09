@@ -6,6 +6,8 @@ const jwt = require("jsonwebtoken");
 
 const Admin = require("../models/Admin");
 
+// TEST
+
 router.get("/test", (req,res)=>{
 
   res.json({
@@ -20,13 +22,9 @@ router.post("/login", async(req,res)=>{
 
   try{
 
-    console.log("BODY:", req.body);
-
     const {username,password} = req.body;
 
     const admin = await Admin.findOne({username});
-
-    console.log("ADMIN:", admin);
 
     if(!admin){
 
