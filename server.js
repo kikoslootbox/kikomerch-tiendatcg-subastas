@@ -1,3 +1,6 @@
+const bidRoutes =
+require("./routes/bidRoutes");
+
 const http =
 require("http");
 
@@ -165,11 +168,17 @@ createRoutes(Merch,"merch");
 
 // =========================
 
-const PORT = process.env.PORT || 5000;
+const PORT =
+process.env.PORT || 5000;
 
-app.listen(PORT, "0.0.0.0", ()=>{
+server.listen(
+PORT,
+"0.0.0.0",
+()=>{
 
-  console.log(`Server Running on ${PORT}`);
+  console.log(
+    `Server Running on ${PORT}`
+  );
 
 });
 

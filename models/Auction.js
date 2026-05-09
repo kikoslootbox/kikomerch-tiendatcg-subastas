@@ -56,6 +56,11 @@ const auctionSchema = new mongoose.Schema({
     default:0
   },
 
+  highestBidder:{
+  type:mongoose.Schema.Types.ObjectId,
+  ref:"User"
+},
+
   bids:{
     type:Number,
     default:0
