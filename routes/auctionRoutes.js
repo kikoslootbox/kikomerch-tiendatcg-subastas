@@ -300,3 +300,114 @@ async(req,res)=>{
 });
 
 module.exports = router;
+
+/* =========================================
+USER DASHBOARD STATS
+========================================= */
+
+router.get(
+"/user/stats/:userId",
+
+async(req,res)=>{
+
+  try{
+
+    const userId =
+    req.params.userId;
+
+    /* =========================
+       ACTIVE
+    ========================= */
+
+    const activeAuctions =
+    await Auction.countDocuments({
+
+      seller:userId,
+
+      ended:false
+
+    });
+
+    /* =========================
+       ENDING SOON
+    ========================= */
+
+    const endingSoon =
+    await Auction.countDocuments({
+
+      seller:userId,
+
+      ended:false,
+
+      endTime:{
+        $lte:
+        new Date(
+          Date.now()
+
+          +
+
+          24 * 60 * 60 * 1000
+        )
+      }
+
+    });
+
+    /* =========================
+       SOLD
+    ========================= */
+
+    const soldAuctions =
+    await Auction.find({
+
+      seller:userId,
+
+      sold:true
+
+    });
+
+    /* =========================
+       TOTAL SALES
+    ========================= */
+
+    const totalSales =
+    soldAuctions.length;
+
+    /* =========================
+       REVENUE
+    ========================= */
+
+    let revenue = 0;
+
+    soldAuctions.forEach(auction=>{
+
+      revenue +=
+      auction.finalPrice || 0;
+
+    });
+
+    res.json({
+
+      activeAuctions,
+
+      endingSoon,
+
+      totalSales,
+
+      revenue
+
+    });
+
+  }catch(err){
+
+    console.log(err);
+
+    res.status(500).json({
+
+      message:
+      err.message
+
+    });
+
+  }
+
+});

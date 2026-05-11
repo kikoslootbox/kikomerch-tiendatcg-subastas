@@ -168,6 +168,15 @@ createRoutes(Sealed,"sealed");
 
 createRoutes(Merch,"merch");
 
+const streamRoutes = require(
+  "./routes/streamRoutes"
+);
+
+app.use(
+  "/api/streams",
+  streamRoutes
+);
+
 // =========================
 
 const PORT =
