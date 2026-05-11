@@ -414,6 +414,8 @@ async(req,res)=>{
 
   try{
 
+    console.log(req.file);
+
     const token =
     req.headers.authorization;
 
