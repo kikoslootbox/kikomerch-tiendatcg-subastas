@@ -1,3 +1,17 @@
+const multer =
+require("multer");
+
+const cloudinary =
+require("../config/cloudinary");
+
+const storage =
+multer.memoryStorage();
+
+const upload =
+multer({
+  storage
+});
+
 const express =
 require("express");
 
@@ -380,6 +394,194 @@ async(req,res)=>{
 
     res.status(500).json({
       message:err.message
+    });
+
+  }
+
+});
+
+/* =========================================
+UPLOAD AVATAR
+========================================= */
+
+router.put(
+
+"/profile/avatar",
+
+upload.single("avatar"),
+
+async(req,res)=>{
+
+  try{
+
+    const token =
+    req.headers.authorization;
+
+    if(!token){
+
+      return res.status(401)
+      .json({
+
+        message:"No token"
+
+      });
+
+    }
+
+    const decoded =
+    jwt.verify(
+
+      token,
+
+      process.env.JWT_SECRET
+
+    );
+
+    /* =========================
+    CLOUDINARY
+    ========================= */
+
+    const base64 =
+
+    `data:${
+      req.file.mimetype
+    };base64,${
+      req.file.buffer.toString(
+        "base64"
+      )
+    }`;
+
+    const uploaded =
+
+    await cloudinary.uploader.upload(
+
+      base64,
+
+      {
+        folder:"avatars"
+      }
+
+    );
+
+    const updatedUser =
+
+    await User.findByIdAndUpdate(
+
+      decoded.id,
+
+      {
+
+        avatar:
+        uploaded.secure_url
+
+      },
+
+      {new:true}
+
+    );
+
+    res.json(updatedUser);
+
+  }catch(err){
+
+    console.log(err);
+
+    res.status(500).json({
+
+      message:err.message
+
+    });
+
+  }
+
+});
+
+/* =========================================
+UPLOAD BANNER
+========================================= */
+
+router.put(
+
+"/profile/banner",
+
+upload.single("banner"),
+
+async(req,res)=>{
+
+  try{
+
+    const token =
+    req.headers.authorization;
+
+    if(!token){
+
+      return res.status(401)
+      .json({
+
+        message:"No token"
+
+      });
+
+    }
+
+    const decoded =
+    jwt.verify(
+
+      token,
+
+      process.env.JWT_SECRET
+
+    );
+
+    const base64 =
+
+    `data:${
+      req.file.mimetype
+    };base64,${
+      req.file.buffer.toString(
+        "base64"
+      )
+    }`;
+
+    const uploaded =
+
+    await cloudinary.uploader.upload(
+
+      base64,
+
+      {
+        folder:"banners"
+      }
+
+    );
+
+    const updatedUser =
+
+    await User.findByIdAndUpdate(
+
+      decoded.id,
+
+      {
+
+        banner:
+        uploaded.secure_url
+
+      },
+
+      {new:true}
+
+    );
+
+    res.json(updatedUser);
+
+  }catch(err){
+
+    console.log(err);
+
+    res.status(500).json({
+
+      message:err.message
+
     });
 
   }
