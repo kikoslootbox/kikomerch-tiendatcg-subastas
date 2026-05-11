@@ -221,5 +221,120 @@ async(req,res)=>{
 
 });
 
-module.exports =
-router;
+/* =========================================
+UPDATE PROFILE
+========================================= */
+
+router.put(
+"/profile",
+
+async(req,res)=>{
+
+  try{
+
+    const token =
+    req.headers.authorization;
+
+    if(!token){
+
+      return res.status(401)
+      .json({
+
+        message:"No token"
+
+      });
+
+    }
+
+    const decoded =
+    jwt.verify(
+
+      token,
+
+      process.env.JWT_SECRET
+
+    );
+
+    const updatedUser =
+
+    await User.findByIdAndUpdate(
+
+      decoded.id,
+
+      req.body,
+
+      {new:true}
+
+    );
+
+    res.json(updatedUser);
+
+  }catch(err){
+
+    console.log(err);
+
+    res.status(500).json({
+
+      message:err.message
+
+    });
+
+  }
+
+});
+
+/* =========================================
+GET MY PROFILE
+========================================= */
+
+router.get(
+"/profile",
+
+async(req,res)=>{
+
+  try{
+
+    const token =
+    req.headers.authorization;
+
+    if(!token){
+
+      return res.status(401)
+      .json({
+
+        message:"No token"
+
+      });
+
+    }
+
+    const decoded =
+    jwt.verify(
+
+      token,
+
+      process.env.JWT_SECRET
+
+    );
+
+    const user =
+
+    await User.findById(
+      decoded.id
+    );
+
+    res.json(user);
+
+  }catch(err){
+
+    console.log(err);
+
+    res.status(500).json({
+
+      message:err.message
+
+    });
+
+  }
+
+});
