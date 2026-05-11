@@ -278,6 +278,57 @@ async(req,res)=>{
 });
 
 /* =========================================
+GET MY PROFILE
+========================================= */
+
+router.get(
+"/profile",
+
+async(req,res)=>{
+
+  try{
+
+    const token =
+    req.headers.authorization;
+
+    if(!token){
+
+      return res.status(401)
+      .json({
+        message:"No token"
+      });
+
+    }
+
+    const decoded =
+    jwt.verify(
+
+      token,
+
+      process.env.JWT_SECRET
+
+    );
+
+    const user =
+    await User.findById(
+      decoded.id
+    );
+
+    res.json(user);
+
+  }catch(err){
+
+    console.log(err);
+
+    res.status(500).json({
+      message:err.message
+    });
+
+  }
+
+});
+
+/* =========================================
 UPDATE MY PROFILE
 ========================================= */
 
@@ -295,9 +346,7 @@ async(req,res)=>{
 
       return res.status(401)
       .json({
-
         message:"No token"
-
       });
 
     }
@@ -330,14 +379,11 @@ async(req,res)=>{
     console.log(err);
 
     res.status(500).json({
-
       message:err.message
-
     });
 
   }
 
 });
 
-module.exports =
-router;
+module.exports = router;
