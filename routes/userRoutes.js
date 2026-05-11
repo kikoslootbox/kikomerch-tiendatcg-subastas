@@ -417,17 +417,6 @@ async(req,res)=>{
     const token =
     req.headers.authorization;
 
-    if(!token){
-
-      return res.status(401)
-      .json({
-
-        message:"No token"
-
-      });
-
-    }
-
     const decoded =
     jwt.verify(
 
@@ -441,27 +430,23 @@ async(req,res)=>{
     CLOUDINARY
     ========================= */
 
-    const base64 =
-
-    `data:${
-      req.file.mimetype
-    };base64,${
-      req.file.buffer.toString(
-        "base64"
-      )
-    }`;
-
     const uploaded =
 
     await cloudinary.uploader.upload(
 
-      base64,
-
-      {
-        folder:"avatars"
-      }
+      `data:${
+        req.file.mimetype
+      };base64,${
+        req.file.buffer.toString(
+          "base64"
+        )
+      }`
 
     );
+
+    /* =========================
+    SAVE URL
+    ========================= */
 
     const updatedUser =
 
@@ -470,14 +455,16 @@ async(req,res)=>{
       decoded.id,
 
       {
-
         avatar:
         uploaded.secure_url
-
       },
 
       {new:true}
 
+    );
+
+    console.log(
+      updatedUser.avatar
     );
 
     res.json(updatedUser);
@@ -513,17 +500,6 @@ async(req,res)=>{
     const token =
     req.headers.authorization;
 
-    if(!token){
-
-      return res.status(401)
-      .json({
-
-        message:"No token"
-
-      });
-
-    }
-
     const decoded =
     jwt.verify(
 
@@ -533,25 +509,17 @@ async(req,res)=>{
 
     );
 
-    const base64 =
-
-    `data:${
-      req.file.mimetype
-    };base64,${
-      req.file.buffer.toString(
-        "base64"
-      )
-    }`;
-
     const uploaded =
 
     await cloudinary.uploader.upload(
 
-      base64,
-
-      {
-        folder:"banners"
-      }
+      `data:${
+        req.file.mimetype
+      };base64,${
+        req.file.buffer.toString(
+          "base64"
+        )
+      }`
 
     );
 
@@ -562,14 +530,16 @@ async(req,res)=>{
       decoded.id,
 
       {
-
         banner:
         uploaded.secure_url
-
       },
 
       {new:true}
 
+    );
+
+    console.log(
+      updatedUser.banner
     );
 
     res.json(updatedUser);
