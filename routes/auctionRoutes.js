@@ -80,7 +80,37 @@ async(req,res)=>{
 
     }
 
-    
+    /* =========================
+DURATION
+========================= */
+
+const durationHours =
+
+parseInt(
+  req.body.duration
+);
+
+/* =========================
+END TIME
+========================= */
+
+const endTime =
+
+new Date(
+
+  Date.now()
+
+  +
+
+  durationHours *
+
+  60 *
+
+  60 *
+
+  1000
+
+);
 
     /* =========================
        CREATE AUCTION
