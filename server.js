@@ -172,6 +172,15 @@ const streamRoutes = require(
   "./routes/streamRoutes"
 );
 
+const contestRoutes = require(
+  "./routes/contestRoutes"
+);
+
+app.use(
+  "/api/contests",
+  contestRoutes
+);
+
 app.use(
   "/api/streams",
   streamRoutes
@@ -363,3 +372,12 @@ io.on("connection",(socket)=>{
   );
 
 });
+
+const raffleRoutes = require(
+  "./routes/raffleRoutes"
+);
+
+app.use(
+  "/api/raffles",
+  raffleRoutes
+);
