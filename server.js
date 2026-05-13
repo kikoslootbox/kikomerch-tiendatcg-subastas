@@ -12,6 +12,7 @@ require("dotenv").config();
 const userRoutes = 
 require("./routes/userRoutes");
 
+
 const auctionRoutes = require("./routes/auctionRoutes");
 const express = require("express");
 const mongoose = require("mongoose");
@@ -391,4 +392,12 @@ const raffleRoutes = require(
 app.use(
   "/api/raffles",
   raffleRoutes
+);
+
+const cartRoutes =
+require("./routes/cartRoutes");
+
+app.use(
+"/api/cart",
+cartRoutes
 );
