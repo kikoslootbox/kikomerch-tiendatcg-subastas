@@ -14,6 +14,11 @@ const gradedSlabSchema = new mongoose.Schema({
 
   price: Number,
 
+  stock:{
+  type:Number,
+  default:1
+},
+
   image: String
 
 });

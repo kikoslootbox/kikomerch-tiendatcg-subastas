@@ -10,6 +10,11 @@ const sealedSchema = new mongoose.Schema({
 
   price: Number,
 
+  stock:{
+  type:Number,
+  default:1
+},
+
   image: String
 
 });
