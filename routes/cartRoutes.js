@@ -175,16 +175,37 @@ async(req,res)=>{
 
     }
 
-    cart.items =
+    const item =
 
-    cart.items.filter(
+    cart.items.find(
 
       item =>
 
-      item.productId !==
+      item.productId ===
       req.params.productId
 
     );
+
+    if(item){
+
+      item.quantity -= 1;
+
+      if(item.quantity <= 0){
+
+        cart.items =
+
+        cart.items.filter(
+
+          i =>
+
+          i.productId !==
+          req.params.productId
+
+        );
+
+      }
+
+    }
 
     await cart.save();
 
