@@ -1,11 +1,42 @@
-const router = require("express").Router();
+const router =
+require("express").Router();
 
-const controller = require("../controllers/rawController");
+const controller =
+require("../controllers/rawController");
 
-router.get("/", controller.getAll);
+const upload =
+require("../middleware/upload");
 
-router.post("/", controller.create);
+/* =========================
+GET
+========================= */
 
-router.delete("/:id", controller.delete);
+router.get(
+  "/",
+  controller.getAll
+);
+
+/* =========================
+CREATE
+========================= */
+
+router.post(
+
+  "/",
+
+  upload.single("image"),
+
+  controller.create
+
+);
+
+/* =========================
+DELETE
+========================= */
+
+router.delete(
+  "/:id",
+  controller.delete
+);
 
 module.exports = router;
