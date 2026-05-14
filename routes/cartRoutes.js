@@ -149,3 +149,55 @@ async(req,res)=>{
 
 module.exports =
 router;
+
+router.delete(
+"/remove/:productId",
+
+auth,
+
+async(req,res)=>{
+
+  try{
+
+    const cart =
+
+    await Cart.findOne({
+
+      user:req.user.id
+
+    });
+
+    if(!cart){
+
+      return res.json({
+        items:[]
+      });
+
+    }
+
+    cart.items =
+
+    cart.items.filter(
+
+      item =>
+
+      item.productId !==
+      req.params.productId
+
+    );
+
+    await cart.save();
+
+    res.json(cart);
+
+  }catch(err){
+
+    console.log(err);
+
+    res.status(500).json({
+      msg:"Error removing item"
+    });
+
+  }
+
+});
