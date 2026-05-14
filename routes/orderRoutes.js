@@ -366,3 +366,38 @@ async(req,res)=>{
   }
 
 });
+
+/* =========================================
+DELETE ORDER
+========================================= */
+
+router.delete(
+"/admin/delete/:id",
+
+async(req,res)=>{
+
+  try{
+
+    await Order.findByIdAndDelete(
+      req.params.id
+    );
+
+    res.json({
+
+      success:true
+
+    });
+
+  }catch(err){
+
+    console.log(err);
+
+    res.status(500).json({
+
+      msg:"Server error"
+
+    });
+
+  }
+
+});
