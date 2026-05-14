@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const sealedSchema = new mongoose.Schema({
 
   franchise: String,
+  
+  set:String,
 
   name: String,
 
