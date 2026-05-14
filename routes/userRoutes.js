@@ -253,62 +253,6 @@ async(req,res)=>{
 
       return res.status(401)
       .json({
-
-        message:"No token"
-
-      });
-
-    }
-
-    const decoded =
-    jwt.verify(
-
-      token,
-
-      process.env.JWT_SECRET
-
-    );
-
-    const user =
-
-    await User.findById(
-      decoded.id
-    );
-
-    res.json(user);
-
-  }catch(err){
-
-    console.log(err);
-
-    res.status(500).json({
-
-      message:err.message
-
-    });
-
-  }
-
-});
-
-/* =========================================
-GET MY PROFILE
-========================================= */
-
-router.get(
-"/profile",
-
-async(req,res)=>{
-
-  try{
-
-    const token =
-    req.headers.authorization;
-
-    if(!token){
-
-      return res.status(401)
-      .json({
         message:"No token"
       });
 
@@ -553,6 +497,73 @@ async(req,res)=>{
     res.status(500).json({
 
       message:err.message
+
+    });
+
+  }
+
+});
+
+/* =========================================
+SAVE ADDRESS
+========================================= */
+
+router.put(
+"/save-address",
+
+async(req,res)=>{
+
+  try{
+
+    const token =
+    req.headers.authorization;
+
+    if(!token){
+
+      return res.status(401)
+      .json({
+
+        message:"No token"
+
+      });
+
+    }
+
+    const decoded =
+    jwt.verify(
+
+      token,
+
+      process.env.JWT_SECRET
+
+    );
+
+    const user =
+
+    await User.findById(
+      decoded.id
+    );
+
+    user.savedAddress =
+    req.body.address;
+
+    await user.save();
+
+    res.json({
+
+      message:
+      "Address saved"
+
+    });
+
+  }catch(err){
+
+    console.log(err);
+
+    res.status(500).json({
+
+      message:
+      err.message
 
     });
 

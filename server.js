@@ -401,3 +401,19 @@ app.use(
 "/api/cart",
 cartRoutes
 );
+
+const orderRoutes =
+require("./routes/orderRoutes");
+
+app.use(
+  "/api/orders",
+  orderRoutes
+);
+
+const paypalRoutes =
+require("./routes/paypalRoutes");
+
+app.use(
+  "/api/paypal",
+  paypalRoutes
+);

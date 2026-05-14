@@ -21,6 +21,11 @@ new mongoose.Schema({
     required:true
   },
 
+  savedAddress:{
+  type:String,
+  default:""
+},
+
   role:{
     type:String,
     default:"user"
