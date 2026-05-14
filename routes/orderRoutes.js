@@ -331,3 +331,38 @@ async(req,res)=>{
   }
 
 });
+
+router.get(
+"/my-orders",
+
+auth,
+
+async(req,res)=>{
+
+  try{
+
+    const orders =
+
+    await Order.find({
+
+      user:req.user.id
+
+    })
+
+    .sort({
+      createdAt:-1
+    });
+
+    res.json(orders);
+
+  }catch(err){
+
+    console.log(err);
+
+    res.status(500).json({
+      msg:"Server error"
+    });
+
+  }
+
+});
