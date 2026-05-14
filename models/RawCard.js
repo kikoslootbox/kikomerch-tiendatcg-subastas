@@ -4,6 +4,8 @@ const rawCardSchema = new mongoose.Schema({
 
   franchise: String,
 
+  set:String,
+
   name: String,
 
   condition: String,
