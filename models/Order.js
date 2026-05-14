@@ -69,6 +69,8 @@ new mongoose.Schema({
 
   },
 
+  meetingZone:String,
+
   trackingNumber:{
 
     type:String,

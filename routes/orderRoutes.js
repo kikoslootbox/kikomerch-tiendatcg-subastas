@@ -218,3 +218,116 @@ async(req,res)=>{
   }
 
 });
+
+/* =========================================
+CASH ORDER
+========================================= */
+
+router.post(
+"/cash-order",
+
+auth,
+
+async(req,res)=>{
+
+  try{
+
+    const {
+
+      shippingAddress,
+
+      meetingZone
+
+    } = req.body;
+
+    const cart =
+
+    await Cart.findOne({
+
+      user:req.user.id
+
+    });
+
+    if(!cart ||
+
+      cart.items.length === 0
+
+    ){
+
+      return res.status(400)
+      .json({
+
+        msg:"Cart empty"
+
+      });
+
+    }
+
+    const subtotal =
+
+    cart.items.reduce(
+
+      (sum,item)=>
+
+      sum +
+
+      (item.price *
+      item.quantity),
+
+      0
+
+    );
+
+    const order =
+
+    new Order({
+
+      user:req.user.id,
+
+      items:cart.items,
+
+      shippingAddress,
+
+      paymentMethod:
+      "Cash",
+
+      subtotal,
+
+      shipping:0,
+
+      total:subtotal,
+
+      status:
+      "Pending Cash",
+
+      meetingZone
+
+    });
+
+    await order.save();
+
+    cart.items = [];
+
+    await cart.save();
+
+    res.json({
+
+      success:true,
+
+      order
+
+    });
+
+  }catch(err){
+
+    console.log(err);
+
+    res.status(500).json({
+
+      msg:"Cash order error"
+
+    });
+
+  }
+
+});
